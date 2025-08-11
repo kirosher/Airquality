@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "Airqualityfactory"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"StationandID_connectionString": {
+			"value": ""
+		},
+		"Weather_station_API_properties_typeProperties_url": {
+			"value": "https://api.openaq.org/"
+		}
+	}
+}

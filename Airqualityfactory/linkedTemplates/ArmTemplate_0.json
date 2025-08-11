@@ -1,0 +1,879 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "Airqualityfactory"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		},
+		"StationandID_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'StationandID'"
+		},
+		"Weather_station_API_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.openaq.org/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/StationandID')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('StationandID_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Weather_station_API')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('Weather_station_API_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Weathersource')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Weather_station_API",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": "v3/locations?coordinates=50.9375,6.9603&radius=10000"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Weather_station_API')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/asset_storage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "StationandID",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "asset",
+						"folderPath": "idderictory",
+						"container": "airdata"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"sensor_id": {
+							"type": "integer"
+						},
+						"meta": {
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"website": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"limit": {
+									"type": "integer"
+								},
+								"found": {
+									"type": "integer"
+								}
+							}
+						},
+						"results": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "integer"
+									},
+									"name": {
+										"type": "string"
+									},
+									"locality": {
+										"type": "string"
+									},
+									"timezone": {
+										"type": "string"
+									},
+									"country": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "integer"
+											},
+											"code": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										}
+									},
+									"owner": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "integer"
+											},
+											"name": {
+												"type": "string"
+											}
+										}
+									},
+									"provider": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "integer"
+											},
+											"name": {
+												"type": "string"
+											}
+										}
+									},
+									"isMobile": {
+										"type": "boolean"
+									},
+									"isMonitor": {
+										"type": "boolean"
+									},
+									"instruments": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer"
+												},
+												"name": {
+													"type": "string"
+												}
+											}
+										}
+									},
+									"sensors": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer"
+												},
+												"name": {
+													"type": "string"
+												},
+												"parameter": {
+													"type": "object",
+													"properties": {
+														"id": {
+															"type": "integer"
+														},
+														"name": {
+															"type": "string"
+														},
+														"units": {
+															"type": "string"
+														},
+														"displayName": {
+															"type": "string"
+														}
+													}
+												}
+											}
+										}
+									},
+									"coordinates": {
+										"type": "object",
+										"properties": {
+											"latitude": {
+												"type": "number"
+											},
+											"longitude": {
+												"type": "number"
+											}
+										}
+									},
+									"licenses": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer"
+												},
+												"name": {
+													"type": "string"
+												},
+												"attribution": {
+													"type": "object",
+													"properties": {
+														"name": {
+															"type": "string"
+														},
+														"url": {
+															"type": "null"
+														}
+													}
+												},
+												"dateFrom": {
+													"type": "string"
+												},
+												"dateTo": {
+													"type": "null"
+												}
+											}
+										}
+									},
+									"bounds": {
+										"type": "array",
+										"items": {
+											"type": "number"
+										}
+									},
+									"distance": {
+										"type": "number"
+									},
+									"datetimeFirst": {
+										"type": "object",
+										"properties": {
+											"utc": {
+												"type": "string"
+											},
+											"local": {
+												"type": "string"
+											}
+										}
+									},
+									"datetimeLast": {
+										"type": "object",
+										"properties": {
+											"utc": {
+												"type": "string"
+											},
+											"local": {
+												"type": "string"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/StationandID')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/idstorage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "StationandID",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "ids",
+						"folderPath": "idderictory",
+						"container": "airdata"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"sensor_id": {
+							"type": "integer"
+						},
+						"meta": {
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"website": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"limit": {
+									"type": "integer"
+								},
+								"found": {
+									"type": "integer"
+								}
+							}
+						},
+						"results": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "integer"
+									},
+									"name": {
+										"type": "string"
+									},
+									"locality": {
+										"type": "string"
+									},
+									"timezone": {
+										"type": "string"
+									},
+									"country": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "integer"
+											},
+											"code": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										}
+									},
+									"owner": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "integer"
+											},
+											"name": {
+												"type": "string"
+											}
+										}
+									},
+									"provider": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "integer"
+											},
+											"name": {
+												"type": "string"
+											}
+										}
+									},
+									"isMobile": {
+										"type": "boolean"
+									},
+									"isMonitor": {
+										"type": "boolean"
+									},
+									"instruments": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer"
+												},
+												"name": {
+													"type": "string"
+												}
+											}
+										}
+									},
+									"sensors": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer"
+												},
+												"name": {
+													"type": "string"
+												},
+												"parameter": {
+													"type": "object",
+													"properties": {
+														"id": {
+															"type": "integer"
+														},
+														"name": {
+															"type": "string"
+														},
+														"units": {
+															"type": "string"
+														},
+														"displayName": {
+															"type": "string"
+														}
+													}
+												}
+											}
+										}
+									},
+									"coordinates": {
+										"type": "object",
+										"properties": {
+											"latitude": {
+												"type": "number"
+											},
+											"longitude": {
+												"type": "number"
+											}
+										}
+									},
+									"licenses": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer"
+												},
+												"name": {
+													"type": "string"
+												},
+												"attribution": {
+													"type": "object",
+													"properties": {
+														"name": {
+															"type": "string"
+														},
+														"url": {
+															"type": "null"
+														}
+													}
+												},
+												"dateFrom": {
+													"type": "string"
+												},
+												"dateTo": {
+													"type": "null"
+												}
+											}
+										}
+									},
+									"bounds": {
+										"type": "array",
+										"items": {
+											"type": "number"
+										}
+									},
+									"distance": {
+										"type": "number"
+									},
+									"datetimeFirst": {
+										"type": "object",
+										"properties": {
+											"utc": {
+												"type": "string"
+											},
+											"local": {
+												"type": "string"
+											}
+										}
+									},
+									"datetimeLast": {
+										"type": "object",
+										"properties": {
+											"utc": {
+												"type": "string"
+											},
+											"local": {
+												"type": "string"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/StationandID')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/stationinformation')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "airderictory",
+						"container": "airdata"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Sensorsid')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copy_sensors",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "[['id']"
+										},
+										"sink": {
+											"path": "station_id"
+										}
+									},
+									{
+										"source": {
+											"path": "[['sensors']"
+										},
+										"sink": {
+											"path": "sensor_id"
+										}
+									}
+								],
+								"collectionReference": "$['results']"
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Weathersource",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "asset_storage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "copy_sensors_copy1",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "copy_sensors",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"wildcardFolderPath": "idderictory",
+									"wildcardFileName": "asset",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings",
+									"copyBehavior": "MergeFiles"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "[['id']"
+										},
+										"sink": {
+											"path": "final_ids"
+										}
+									},
+									{
+										"source": {
+											"path": "$['station_id']"
+										},
+										"sink": {
+											"path": "final_station"
+										}
+									}
+								],
+								"collectionReference": "$['sensor_id']"
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "asset_storage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "idstorage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Main assets"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-08-11T12:02:23Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Weathersource')]",
+				"[concat(variables('factoryId'), '/datasets/asset_storage')]",
+				"[concat(variables('factoryId'), '/datasets/idstorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Stations')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_Weather_to_blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Weathersource",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "stationinformation",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Main assets"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-08-08T13:18:33Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Weathersource')]",
+				"[concat(variables('factoryId'), '/datasets/stationinformation')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Main')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Cologne station",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Stations",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Sensors from the stations",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Cologne station",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Sensorsid",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-08-08T13:18:33Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Stations')]",
+				"[concat(variables('factoryId'), '/pipelines/Sensorsid')]"
+			]
+		}
+	]
+}
