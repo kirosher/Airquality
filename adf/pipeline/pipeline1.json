@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy_id_copy1",
+				"name": "copy_sensors_copy1",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -20,8 +20,8 @@
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
-							"wildcardFolderPath": "airderictory",
-							"wildcardFileName": "data_94509a60-ec84-42c6-ae24-4db4f137b81c_2dbe5437-be10-4e2b-85c0-cf690b58bba4.json",
+							"wildcardFolderPath": "idderictory",
+							"wildcardFileName": "data_e226ee74-68aa-4ecb-af4d-ec68eb2e601e_db98256c-2341-4632-ac13-35b941b423c3.json",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
@@ -31,59 +31,49 @@
 					"sink": {
 						"type": "JsonSink",
 						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings"
+							"type": "AzureBlobStorageWriteSettings",
+							"copyBehavior": "FlattenHierarchy"
 						},
 						"formatSettings": {
 							"type": "JsonWriteSettings"
 						}
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['id']"
+								},
+								"sink": {
+									"path": "final_ids"
+								}
+							},
+							{
+								"source": {
+									"path": "$['station_id']"
+								},
+								"sink": {
+									"path": "final_station"
+								}
+							}
+						],
+						"collectionReference": "$['sensor_id']"
+					}
 				},
 				"inputs": [
 					{
-						"referenceName": "stationinformation",
+						"referenceName": "asset_storage",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "idstorage",
+						"referenceName": "asset_storage",
 						"type": "DatasetReference"
 					}
 				]
-			},
-			{
-				"name": "Lookup1",
-				"type": "Lookup",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "JsonSource",
-						"storeSettings": {
-							"type": "AzureBlobStorageReadSettings",
-							"recursive": false,
-							"wildcardFolderPath": "airderictory",
-							"wildcardFileName": "data_94509a60-ec84-42c6-ae24-4db4f137b81c_2dbe5437-be10-4e2b-85c0-cf690b58bba4.json",
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "JsonReadSettings"
-						}
-					},
-					"dataset": {
-						"referenceName": "stationinformation",
-						"type": "DatasetReference"
-					},
-					"firstRowOnly": false
-				}
 			}
 		],
 		"variables": {

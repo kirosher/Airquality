@@ -27,18 +27,119 @@
 					"sink": {
 						"type": "JsonSink",
 						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings",
-							"copyBehavior": "FlattenHierarchy"
+							"type": "AzureBlobStorageWriteSettings"
 						},
 						"formatSettings": {
 							"type": "JsonWriteSettings"
 						}
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['id']"
+								},
+								"sink": {
+									"path": "station_id"
+								}
+							},
+							{
+								"source": {
+									"path": "['sensors']"
+								},
+								"sink": {
+									"path": "sensor_id"
+								}
+							}
+						],
+						"collectionReference": "$['results']"
+					}
 				},
 				"inputs": [
 					{
 						"referenceName": "Weathersource",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "asset_storage",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "copy_sensors_copy1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "copy_sensors",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": "idderictory",
+							"wildcardFileName": "asset",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings",
+							"copyBehavior": "MergeFiles"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['id']"
+								},
+								"sink": {
+									"path": "final_ids"
+								}
+							},
+							{
+								"source": {
+									"path": "$['station_id']"
+								},
+								"sink": {
+									"path": "final_station"
+								}
+							}
+						],
+						"collectionReference": "$['sensor_id']"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "asset_storage",
 						"type": "DatasetReference"
 					}
 				],
