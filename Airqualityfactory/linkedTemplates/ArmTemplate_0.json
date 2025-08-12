@@ -15,17 +15,13 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'StationandID'"
 		},
-		"RestService1_properties_typeProperties_url": {
+		"factorysecurity_properties_typeProperties_baseUrl": {
 			"type": "string",
-			"defaultValue": "https://api.openaq.org/"
+			"defaultValue": "https://airsecurity.vault.azure.net/"
 		},
 		"Weather_station_API_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.openaq.org/"
-		},
-		"factorysecurity_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://airsecurity.vault.azure.net/"
 		}
 	},
 	"variables": {
@@ -46,21 +42,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/RestService1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "RestService",
-				"typeProperties": {
-					"url": "[parameters('RestService1_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Anonymous"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/StationandID')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -69,21 +50,6 @@
 				"type": "AzureBlobStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('StationandID_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Weather_station_API')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "RestService",
-				"typeProperties": {
-					"url": "[parameters('Weather_station_API_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Anonymous"
 				}
 			},
 			"dependsOn": []
@@ -346,26 +312,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Weathersource')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Weather_station_API",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "RestResource",
-				"typeProperties": {
-					"relativeUrl": "v3/locations?coordinates=50.9375,6.9603&radius=10000"
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Weather_station_API')]"
 			]
 		},
 		{
@@ -851,35 +797,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/sensorsource1batch')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Weather_station_API",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"sensor_id": {
-						"type": "int",
-						"defaultValue": 1292726
-					}
-				},
-				"annotations": [],
-				"type": "RestResource",
-				"typeProperties": {
-					"relativeUrl": {
-						"value": "v3/sensors/@{dataset().sensor_id}/measurements/hourly?datetime_from=2025-03-01&datetime_to=2025-04-01&limit=1000",
-						"type": "Expression"
-					}
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Weather_station_API')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/stationinformation')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -911,6 +828,83 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Weather_station_API')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('Weather_station_API_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous",
+					"authHeaders": {
+						"X-API-Key": {
+							"type": "AzureKeyVaultSecret",
+							"store": {
+								"referenceName": "factorysecurity",
+								"type": "LinkedServiceReference"
+							},
+							"secretName": "airsecret",
+							"secretVersion": "394cd8c477184ad485c44cd8fc081e86"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/factorysecurity')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Weathersource')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Weather_station_API",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": "v3/locations?coordinates=50.9375,6.9603&radius=10000"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Weather_station_API')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sensorsource1batch')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Weather_station_API",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"sensor_id": {
+						"type": "int",
+						"defaultValue": 1292726
+					}
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": {
+						"value": "v3/sensors/@{dataset().sensor_id}/measurements/hourly?datetime_from=2025-03-01&datetime_to=2025-04-01&limit=1000",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Weather_station_API')]"
 			]
 		},
 		{
@@ -1275,7 +1269,9 @@
 							{
 								"referenceName": "stationinformation",
 								"type": "DatasetReference",
-								"parameters": {}
+								"parameters": {
+									"day": "12th"
+								}
 							}
 						]
 					}
