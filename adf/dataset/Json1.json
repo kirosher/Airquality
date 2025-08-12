@@ -1,0 +1,233 @@
+{
+	"name": "Json1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "sensor_@{item().final_id}.json",
+					"type": "Expression"
+				},
+				"folderPath": "SensorDerictory",
+				"container": "airdata"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"meta": {
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"website": {
+							"type": "string"
+						},
+						"page": {
+							"type": "integer"
+						},
+						"found": {
+							"type": "integer"
+						},
+						"limit": {
+							"type": "integer"
+						}
+					}
+				},
+				"station_id": {
+					"type": "integer"
+				},
+				"sensor_id": {
+					"type": "integer"
+				},
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"id": {
+								"type": "integer"
+							},
+							"name": {
+								"type": "string"
+							},
+							"locality": {
+								"type": "string"
+							},
+							"timezone": {
+								"type": "string"
+							},
+							"country": {
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "integer"
+									},
+									"code": {
+										"type": "string"
+									},
+									"name": {
+										"type": "string"
+									}
+								}
+							},
+							"owner": {
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "integer"
+									},
+									"name": {
+										"type": "string"
+									}
+								}
+							},
+							"provider": {
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "integer"
+									},
+									"name": {
+										"type": "string"
+									}
+								}
+							},
+							"isMobile": {
+								"type": "boolean"
+							},
+							"isMonitor": {
+								"type": "boolean"
+							},
+							"instruments": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "integer"
+										},
+										"name": {
+											"type": "string"
+										}
+									}
+								}
+							},
+							"sensors": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "integer"
+										},
+										"name": {
+											"type": "string"
+										},
+										"parameter": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer"
+												},
+												"name": {
+													"type": "string"
+												},
+												"units": {
+													"type": "string"
+												},
+												"displayName": {
+													"type": "string"
+												}
+											}
+										}
+									}
+								}
+							},
+							"coordinates": {
+								"type": "object",
+								"properties": {
+									"latitude": {
+										"type": "number"
+									},
+									"longitude": {
+										"type": "number"
+									}
+								}
+							},
+							"licenses": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "integer"
+										},
+										"name": {
+											"type": "string"
+										},
+										"attribution": {
+											"type": "object",
+											"properties": {
+												"name": {
+													"type": "string"
+												},
+												"url": {
+													"type": "null"
+												}
+											}
+										},
+										"dateFrom": {
+											"type": "string"
+										},
+										"dateTo": {
+											"type": "null"
+										}
+									}
+								}
+							},
+							"bounds": {
+								"type": "array",
+								"items": {
+									"type": "number"
+								}
+							},
+							"distance": {
+								"type": "number"
+							},
+							"datetimeFirst": {
+								"type": "object",
+								"properties": {
+									"utc": {
+										"type": "string"
+									},
+									"local": {
+										"type": "string"
+									}
+								}
+							},
+							"datetimeLast": {
+								"type": "object",
+								"properties": {
+									"utc": {
+										"type": "string"
+									},
+									"local": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
