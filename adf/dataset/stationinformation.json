@@ -5,12 +5,22 @@
 			"referenceName": "AzureBlobStorage1",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"day": {
+				"type": "string",
+				"defaultValue": "12th"
+			}
+		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "airderictory",
+				"fileName": "stations around cologne",
+				"folderPath": {
+					"value": "2025/August/@{dataset().day}",
+					"type": "Expression"
+				},
 				"container": "airdata"
 			}
 		},

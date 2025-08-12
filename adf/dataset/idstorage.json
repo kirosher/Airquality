@@ -5,13 +5,19 @@
 			"referenceName": "StationandID",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"day": {
+				"type": "string",
+				"defaultValue": "12th"
+			}
+		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "ids",
-				"folderPath": "idderictory",
+				"folderPath": "2025/August/2025/August/@{dataset().day}",
 				"container": "airdata"
 			}
 		},

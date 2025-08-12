@@ -5,6 +5,12 @@
 			"referenceName": "AzureBlobStorage1",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"day": {
+				"type": "string",
+				"defaultValue": "12th"
+			}
+		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
@@ -14,7 +20,10 @@
 					"value": "sensor_@{item().final_id}.json",
 					"type": "Expression"
 				},
-				"folderPath": "SensorDerictory",
+				"folderPath": {
+					"value": "2025/August/2025/August/@{dataset().day}/Sensorinfo",
+					"type": "Expression"
+				},
 				"container": "airdata"
 			}
 		},

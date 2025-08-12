@@ -35,7 +35,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Sensorsid",
+						"referenceName": "Sensorsid_and_Stationid",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true

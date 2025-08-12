@@ -101,7 +101,10 @@
 							"outputs": [
 								{
 									"referenceName": "Json1",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"day": "12th"
+									}
 								}
 							]
 						}
