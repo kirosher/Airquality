@@ -1,0 +1,10 @@
+{
+	"name": "factorysecurity",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://airsecurity.vault.azure.net/"
+		}
+	}
+}
