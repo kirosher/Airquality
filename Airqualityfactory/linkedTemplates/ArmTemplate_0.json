@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'StationandID'"
 		},
+		"RestService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.openaq.org/"
+		},
 		"Weather_station_API_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.openaq.org/"
@@ -33,6 +37,21 @@
 				"type": "AzureBlobStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestService1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestService1_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
 				}
 			},
 			"dependsOn": []
@@ -64,6 +83,244 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Json1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "sensor_@{item().final_id}.json",
+							"type": "Expression"
+						},
+						"folderPath": "SensorDerictory",
+						"container": "airdata"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"meta": {
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"website": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								},
+								"found": {
+									"type": "integer"
+								},
+								"limit": {
+									"type": "integer"
+								}
+							}
+						},
+						"station_id": {
+							"type": "integer"
+						},
+						"sensor_id": {
+							"type": "integer"
+						},
+						"results": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "integer"
+									},
+									"name": {
+										"type": "string"
+									},
+									"locality": {
+										"type": "string"
+									},
+									"timezone": {
+										"type": "string"
+									},
+									"country": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "integer"
+											},
+											"code": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										}
+									},
+									"owner": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "integer"
+											},
+											"name": {
+												"type": "string"
+											}
+										}
+									},
+									"provider": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "integer"
+											},
+											"name": {
+												"type": "string"
+											}
+										}
+									},
+									"isMobile": {
+										"type": "boolean"
+									},
+									"isMonitor": {
+										"type": "boolean"
+									},
+									"instruments": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer"
+												},
+												"name": {
+													"type": "string"
+												}
+											}
+										}
+									},
+									"sensors": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer"
+												},
+												"name": {
+													"type": "string"
+												},
+												"parameter": {
+													"type": "object",
+													"properties": {
+														"id": {
+															"type": "integer"
+														},
+														"name": {
+															"type": "string"
+														},
+														"units": {
+															"type": "string"
+														},
+														"displayName": {
+															"type": "string"
+														}
+													}
+												}
+											}
+										}
+									},
+									"coordinates": {
+										"type": "object",
+										"properties": {
+											"latitude": {
+												"type": "number"
+											},
+											"longitude": {
+												"type": "number"
+											}
+										}
+									},
+									"licenses": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer"
+												},
+												"name": {
+													"type": "string"
+												},
+												"attribution": {
+													"type": "object",
+													"properties": {
+														"name": {
+															"type": "string"
+														},
+														"url": {
+															"type": "null"
+														}
+													}
+												},
+												"dateFrom": {
+													"type": "string"
+												},
+												"dateTo": {
+													"type": "null"
+												}
+											}
+										}
+									},
+									"bounds": {
+										"type": "array",
+										"items": {
+											"type": "number"
+										}
+									},
+									"distance": {
+										"type": "number"
+									},
+									"datetimeFirst": {
+										"type": "object",
+										"properties": {
+											"utc": {
+												"type": "string"
+											},
+											"local": {
+												"type": "string"
+											}
+										}
+									},
+									"datetimeLast": {
+										"type": "object",
+										"properties": {
+											"utc": {
+												"type": "string"
+											},
+											"local": {
+												"type": "string"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Weathersource')]",
@@ -550,6 +807,35 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/sensorsource1batch')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Weather_station_API",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"sensor_id": {
+						"type": "int",
+						"defaultValue": 1292726
+					}
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": {
+						"value": "v3/sensors/@{dataset().sensor_id}/measurements/hourly?datetime_from=2025-01-01&datetime_to=2025-02-10&limit=1000",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Weather_station_API')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/stationinformation')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -571,6 +857,140 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Sensorinfo')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"wildcardFolderPath": "idderictory",
+									"wildcardFileName": "data_05b649e3-754f-4fdb-a693-ae32338a4451_5362d363-177b-45a0-989b-b56d05a7f641.json",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "idstorage",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup1",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup1').output.value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Copy data1",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:01:40",
+											"requestInterval": "00.00:00:00.010",
+											"requestMethod": "GET",
+											"paginationRules": {
+												"supportRFC5988": "true"
+											}
+										},
+										"sink": {
+											"type": "JsonSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "JsonWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "sensorsource1batch",
+											"type": "DatasetReference",
+											"parameters": {
+												"sensor_id": {
+													"value": "@item().final_id",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "Json1",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"sensorData": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Main assets"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/idstorage')]",
+				"[concat(variables('factoryId'), '/datasets/sensorsource1batch')]",
+				"[concat(variables('factoryId'), '/datasets/Json1')]"
 			]
 		},
 		{

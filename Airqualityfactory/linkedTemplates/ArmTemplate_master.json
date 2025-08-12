@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'StationandID'"
 		},
+		"RestService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.openaq.org/"
+		},
 		"Weather_station_API_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.openaq.org/"
@@ -51,6 +55,9 @@
 					},
 					"StationandID_connectionString": {
 						"value": "[parameters('StationandID_connectionString')]"
+					},
+					"RestService1_properties_typeProperties_url": {
+						"value": "[parameters('RestService1_properties_typeProperties_url')]"
 					},
 					"Weather_station_API_properties_typeProperties_url": {
 						"value": "[parameters('Weather_station_API_properties_typeProperties_url')]"
