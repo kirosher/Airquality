@@ -44,7 +44,10 @@
 				"outputs": [
 					{
 						"referenceName": "stationinformation",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"day": "12th"
+						}
 					}
 				]
 			}
