@@ -11,8 +11,14 @@
 		"StationandID_connectionString": {
 			"value": ""
 		},
+		"RestService1_properties_typeProperties_url": {
+			"value": "https://api.openaq.org/"
+		},
 		"Weather_station_API_properties_typeProperties_url": {
 			"value": "https://api.openaq.org/"
+		},
+		"factorysecurity_properties_typeProperties_baseUrl": {
+			"value": "https://airsecurity.vault.azure.net/"
 		},
 		"containerUri": {
 			"value": ""

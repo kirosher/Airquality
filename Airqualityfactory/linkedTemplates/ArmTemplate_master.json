@@ -15,9 +15,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'StationandID'"
 		},
+		"RestService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.openaq.org/"
+		},
 		"Weather_station_API_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.openaq.org/"
+		},
+		"factorysecurity_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://airsecurity.vault.azure.net/"
 		},
 		"containerUri": {
 			"type": "string",
@@ -52,8 +60,14 @@
 					"StationandID_connectionString": {
 						"value": "[parameters('StationandID_connectionString')]"
 					},
+					"RestService1_properties_typeProperties_url": {
+						"value": "[parameters('RestService1_properties_typeProperties_url')]"
+					},
 					"Weather_station_API_properties_typeProperties_url": {
 						"value": "[parameters('Weather_station_API_properties_typeProperties_url')]"
+					},
+					"factorysecurity_properties_typeProperties_baseUrl": {
+						"value": "[parameters('factorysecurity_properties_typeProperties_baseUrl')]"
 					}
 				}
 			},

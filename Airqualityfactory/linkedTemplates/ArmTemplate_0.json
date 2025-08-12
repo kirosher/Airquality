@@ -15,9 +15,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'StationandID'"
 		},
+		"RestService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.openaq.org/"
+		},
 		"Weather_station_API_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.openaq.org/"
+		},
+		"factorysecurity_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://airsecurity.vault.azure.net/"
 		}
 	},
 	"variables": {
@@ -33,6 +41,21 @@
 				"type": "AzureBlobStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestService1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestService1_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
 				}
 			},
 			"dependsOn": []
@@ -66,6 +89,19 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/factorysecurity')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('factorysecurity_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Json1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -73,6 +109,12 @@
 				"linkedServiceName": {
 					"referenceName": "AzureBlobStorage1",
 					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"day": {
+						"type": "string",
+						"defaultValue": "12th"
+					}
 				},
 				"annotations": [],
 				"type": "Json",
@@ -83,7 +125,10 @@
 							"value": "sensor_@{item().final_id}.json",
 							"type": "Expression"
 						},
-						"folderPath": "SensorDerictory",
+						"folderPath": {
+							"value": "2025/August/@{dataset().day}/Sensorinfo",
+							"type": "Expression"
+						},
 						"container": "airdata"
 					}
 				},
@@ -332,13 +377,22 @@
 					"referenceName": "StationandID",
 					"type": "LinkedServiceReference"
 				},
+				"parameters": {
+					"day": {
+						"type": "string",
+						"defaultValue": "12th"
+					}
+				},
 				"annotations": [],
 				"type": "Json",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"fileName": "asset",
-						"folderPath": "idderictory",
+						"folderPath": {
+							"value": "2025/August/@{dataset().day}",
+							"type": "Expression"
+						},
 						"container": "airdata"
 					}
 				},
@@ -564,13 +618,22 @@
 					"referenceName": "StationandID",
 					"type": "LinkedServiceReference"
 				},
+				"parameters": {
+					"day": {
+						"type": "string",
+						"defaultValue": "12th"
+					}
+				},
 				"annotations": [],
 				"type": "Json",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"fileName": "ids",
-						"folderPath": "idderictory",
+						"folderPath": {
+							"value": "2025/August/@{dataset().day}",
+							"type": "Expression"
+						},
 						"container": "airdata"
 					}
 				},
@@ -825,12 +888,22 @@
 					"referenceName": "AzureBlobStorage1",
 					"type": "LinkedServiceReference"
 				},
+				"parameters": {
+					"day": {
+						"type": "string",
+						"defaultValue": "12th"
+					}
+				},
 				"annotations": [],
 				"type": "Json",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "airderictory",
+						"fileName": "stations around cologne",
+						"folderPath": {
+							"value": "2025/August/@{dataset().day}",
+							"type": "Expression"
+						},
 						"container": "airdata"
 					}
 				},
@@ -864,8 +937,8 @@
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
 									"recursive": true,
-									"wildcardFolderPath": "idderictory",
-									"wildcardFileName": "data_05b649e3-754f-4fdb-a693-ae32338a4451_5362d363-177b-45a0-989b-b56d05a7f641.json",
+									"wildcardFolderPath": "2025/August/12th",
+									"wildcardFileName": "sensorids.json",
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -875,7 +948,9 @@
 							"dataset": {
 								"referenceName": "idstorage",
 								"type": "DatasetReference",
-								"parameters": {}
+								"parameters": {
+									"day": "12th"
+								}
 							},
 							"firstRowOnly": false
 						}
@@ -947,7 +1022,9 @@
 										{
 											"referenceName": "Json1",
 											"type": "DatasetReference",
-											"parameters": {}
+											"parameters": {
+												"day": "12th"
+											}
 										}
 									]
 								}
@@ -975,7 +1052,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Sensorsid')]",
+			"name": "[concat(parameters('factoryName'), '/Sensorsid_and_Stationid')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1075,7 +1152,7 @@
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
 									"recursive": true,
-									"wildcardFolderPath": "idderictory",
+									"wildcardFolderPath": "2025/August/12th",
 									"wildcardFileName": "asset",
 									"enablePartitionDiscovery": false
 								},
@@ -1257,7 +1334,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "Sensorsid",
+								"referenceName": "Sensorsid_and_Stationid",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -1273,7 +1350,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/Stations')]",
-				"[concat(variables('factoryId'), '/pipelines/Sensorsid')]"
+				"[concat(variables('factoryId'), '/pipelines/Sensorsid_and_Stationid')]"
 			]
 		}
 	]
