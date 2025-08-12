@@ -14,7 +14,10 @@
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
-			"relativeUrl": "v3/sensors/@{dataset().sensor_id}/measurements/hourly?datetime_from=2025-01-01&datetime_to=2025-02-10&limit=1000"
+			"relativeUrl": {
+				"value": "v3/sensors/@{dataset().sensor_id}/measurements/hourly?datetime_from=2025-03-01&datetime_to=2025-04-01&limit=1000",
+				"type": "Expression"
+			}
 		},
 		"schema": []
 	},
