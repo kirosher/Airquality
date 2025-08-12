@@ -17,7 +17,10 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "ids",
-				"folderPath": "2025/August/2025/August/@{dataset().day}",
+				"folderPath": {
+					"value": "2025/August/@{dataset().day}",
+					"type": "Expression"
+				},
 				"container": "airdata"
 			}
 		},

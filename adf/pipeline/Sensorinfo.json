@@ -20,8 +20,8 @@
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
-							"wildcardFolderPath": "idderictory",
-							"wildcardFileName": "data_05b649e3-754f-4fdb-a693-ae32338a4451_5362d363-177b-45a0-989b-b56d05a7f641.json",
+							"wildcardFolderPath": "2025/August/12th",
+							"wildcardFileName": "sensorids.json",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
@@ -30,7 +30,10 @@
 					},
 					"dataset": {
 						"referenceName": "idstorage",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"day": "12th"
+						}
 					},
 					"firstRowOnly": false
 				}

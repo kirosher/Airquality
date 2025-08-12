@@ -16,6 +16,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "asset",
 				"folderPath": {
 					"value": "2025/August/@{dataset().day}",
 					"type": "Expression"

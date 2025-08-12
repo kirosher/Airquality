@@ -21,7 +21,7 @@
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "2025/August/2025/August/@{dataset().day}/Sensorinfo",
+					"value": "2025/August/@{dataset().day}/Sensorinfo",
 					"type": "Expression"
 				},
 				"container": "airdata"
