@@ -297,7 +297,9 @@
 							{
 								"referenceName": "asset_storage",
 								"type": "DatasetReference",
-								"parameters": {}
+								"parameters": {
+									"day": "13th"
+								}
 							}
 						]
 					},
@@ -372,14 +374,18 @@
 							{
 								"referenceName": "asset_storage",
 								"type": "DatasetReference",
-								"parameters": {}
+								"parameters": {
+									"day": "13th"
+								}
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "idstorage",
 								"type": "DatasetReference",
-								"parameters": {}
+								"parameters": {
+									"day": "13th"
+								}
 							}
 						]
 					}
@@ -450,7 +456,7 @@
 								"referenceName": "stationinformation",
 								"type": "DatasetReference",
 								"parameters": {
-									"day": "12th"
+									"day": "13th"
 								}
 							}
 						]
@@ -482,7 +488,7 @@
 				"parameters": {
 					"day": {
 						"type": "string",
-						"defaultValue": "12th"
+						"defaultValue": "13th"
 					}
 				},
 				"annotations": [],
@@ -749,7 +755,7 @@
 				"parameters": {
 					"day": {
 						"type": "string",
-						"defaultValue": "12th"
+						"defaultValue": "13th"
 					}
 				},
 				"annotations": [],
@@ -990,7 +996,7 @@
 				"parameters": {
 					"day": {
 						"type": "string",
-						"defaultValue": "12th"
+						"defaultValue": "13th"
 					}
 				},
 				"annotations": [],
@@ -1260,7 +1266,7 @@
 				"parameters": {
 					"day": {
 						"type": "string",
-						"defaultValue": "12th"
+						"defaultValue": "13th"
 					}
 				},
 				"annotations": [],
