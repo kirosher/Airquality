@@ -66,7 +66,10 @@
 				"outputs": [
 					{
 						"referenceName": "asset_storage",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"day": "13th"
+						}
 					}
 				]
 			},
@@ -140,13 +143,19 @@
 				"inputs": [
 					{
 						"referenceName": "asset_storage",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"day": "13th"
+						}
 					}
 				],
 				"outputs": [
 					{
 						"referenceName": "idstorage",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"day": "13th"
+						}
 					}
 				]
 			}
