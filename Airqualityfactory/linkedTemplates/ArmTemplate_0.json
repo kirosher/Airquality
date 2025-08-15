@@ -79,7 +79,11 @@
 				"parameters": {
 					"day": {
 						"type": "string",
-						"defaultValue": "13th"
+						"defaultValue": "15th"
+					},
+					"month": {
+						"type": "string",
+						"defaultValue": "may"
 					}
 				},
 				"annotations": [],
@@ -92,7 +96,7 @@
 							"type": "Expression"
 						},
 						"folderPath": {
-							"value": "2025/August/@{dataset().day}/Sensorinfo",
+							"value": "2025/August/@{dataset().day}/Sensorinfo_@{dataset().month}",
 							"type": "Expression"
 						},
 						"container": "airdata"
@@ -879,7 +883,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/sensorsource1batch')]",
+			"name": "[concat(parameters('factoryName'), '/sensorsource2batch')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -897,7 +901,44 @@
 				"type": "RestResource",
 				"typeProperties": {
 					"relativeUrl": {
-						"value": "v3/sensors/@{dataset().sensor_id}/measurements/hourly?datetime_from=2025-03-01&datetime_to=2025-04-01&limit=1000",
+						"value": "v3/sensors/@{dataset().sensor_id}/measurements/hourly?datetime_from=2025-04-01&datetime_to=2025-05-01&limit=1000",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Weather_station_API')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sensorsourcebatch')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Weather_station_API",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"sensor_id": {
+						"type": "int",
+						"defaultValue": 1292726
+					},
+					"datefrom": {
+						"type": "string",
+						"defaultValue": "2025-04-01"
+					},
+					"dateto": {
+						"type": "string",
+						"defaultValue": "2025-05-01"
+					}
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": {
+						"value": "v3/sensors/@{dataset().sensor_id}/measurements/hourly?datetime_from=@{dataset().datefrom}&datetime_to=@{dataset().dateto}&limit=1000",
 						"type": "Expression"
 					}
 				},
@@ -1002,7 +1043,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "sensorsource1batch",
+											"referenceName": "sensorsourcebatch",
 											"type": "DatasetReference",
 											"parameters": {
 												"sensor_id": {
@@ -1041,7 +1082,144 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/idstorage')]",
-				"[concat(variables('factoryId'), '/datasets/sensorsource1batch')]",
+				"[concat(variables('factoryId'), '/datasets/sensorsourcebatch')]",
+				"[concat(variables('factoryId'), '/datasets/Json1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Sensorinfo_2ndbatch')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"wildcardFolderPath": "2025/August/12th",
+									"wildcardFileName": "sensorids.json",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "idstorage",
+								"type": "DatasetReference",
+								"parameters": {
+									"day": "12th"
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup1",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup1').output.value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Copy data1",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:01:40",
+											"requestInterval": "00.00:00:00.010",
+											"requestMethod": "GET",
+											"paginationRules": {
+												"supportRFC5988": "true"
+											}
+										},
+										"sink": {
+											"type": "JsonSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "JsonWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "sensorsourcebatch",
+											"type": "DatasetReference",
+											"parameters": {
+												"sensor_id": "@item().final_id",
+												"datefrom": "2025-05-01",
+												"dateto": "2025-06-01"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "Json1",
+											"type": "DatasetReference",
+											"parameters": {
+												"day": "15th"
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"sensorData": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Main assets"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/idstorage')]",
+				"[concat(variables('factoryId'), '/datasets/sensorsourcebatch')]",
 				"[concat(variables('factoryId'), '/datasets/Json1')]"
 			]
 		},
