@@ -1,5 +1,5 @@
 {
-	"name": "Sensorinfo",
+	"name": "Sensorinfo_2ndbatch",
 	"properties": {
 		"activities": [
 			{
@@ -94,10 +94,9 @@
 									"referenceName": "sensorsourcebatch",
 									"type": "DatasetReference",
 									"parameters": {
-										"sensor_id": {
-											"value": "@item().final_id",
-											"type": "Expression"
-										}
+										"sensor_id": "@item().final_id",
+										"datefrom": "2025-05-01",
+										"dateto": "2025-06-01"
 									}
 								}
 							],
@@ -106,7 +105,7 @@
 									"referenceName": "Json1",
 									"type": "DatasetReference",
 									"parameters": {
-										"day": "13th"
+										"day": "15th"
 									}
 								}
 							]

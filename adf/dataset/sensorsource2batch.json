@@ -1,5 +1,5 @@
 {
-	"name": "sensorsourcebatch",
+	"name": "sensorsource2batch",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "Weather_station_API",
@@ -9,21 +9,13 @@
 			"sensor_id": {
 				"type": "int",
 				"defaultValue": 1292726
-			},
-			"datefrom": {
-				"type": "string",
-				"defaultValue": "2025-04-01"
-			},
-			"dateto": {
-				"type": "string",
-				"defaultValue": "2025-05-01"
 			}
 		},
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "v3/sensors/@{dataset().sensor_id}/measurements/hourly?datetime_from=@{dataset().datefrom}&datetime_to=@{dataset().dateto}&limit=1000",
+				"value": "v3/sensors/@{dataset().sensor_id}/measurements/hourly?datetime_from=2025-04-01&datetime_to=2025-05-01&limit=1000",
 				"type": "Expression"
 			}
 		},
