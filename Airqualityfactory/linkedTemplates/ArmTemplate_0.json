@@ -96,7 +96,7 @@
 							"type": "Expression"
 						},
 						"folderPath": {
-							"value": "2025/August/@{dataset().day}/Sensorinfo_@{dataset().month}",
+							"value": "Sensorinfo/Sensorinfo_@{dataset().month}/2025/August/@{dataset().day}",
 							"type": "Expression"
 						},
 						"container": "airdata"
@@ -1049,7 +1049,9 @@
 												"sensor_id": {
 													"value": "@item().final_id",
 													"type": "Expression"
-												}
+												},
+												"datefrom": "2025-04-01",
+												"dateto": "2025-05-01"
 											}
 										}
 									],
@@ -1058,7 +1060,8 @@
 											"referenceName": "Json1",
 											"type": "DatasetReference",
 											"parameters": {
-												"day": "13th"
+												"day": "13th",
+												"month": "may"
 											}
 										}
 									]
@@ -1185,8 +1188,8 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"sensor_id": "@item().final_id",
-												"datefrom": "2025-05-01",
-												"dateto": "2025-06-01"
+												"datefrom": "2025-02-01",
+												"dateto": "2025-03-01"
 											}
 										}
 									],
@@ -1195,7 +1198,8 @@
 											"referenceName": "Json1",
 											"type": "DatasetReference",
 											"parameters": {
-												"day": "15th"
+												"day": "18th",
+												"month": "february"
 											}
 										}
 									]
