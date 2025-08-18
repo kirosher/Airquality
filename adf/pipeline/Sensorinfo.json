@@ -97,7 +97,9 @@
 										"sensor_id": {
 											"value": "@item().final_id",
 											"type": "Expression"
-										}
+										},
+										"datefrom": "2025-04-01",
+										"dateto": "2025-05-01"
 									}
 								}
 							],
@@ -106,7 +108,8 @@
 									"referenceName": "Json1",
 									"type": "DatasetReference",
 									"parameters": {
-										"day": "13th"
+										"day": "13th",
+										"month": "may"
 									}
 								}
 							]
