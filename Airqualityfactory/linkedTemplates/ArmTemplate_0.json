@@ -1188,8 +1188,8 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"sensor_id": "@item().final_id",
-												"datefrom": "2025-02-01",
-												"dateto": "2025-03-01"
+												"datefrom": "2025-08-01",
+												"dateto": "2025-08-19"
 											}
 										}
 									],
@@ -1198,8 +1198,8 @@
 											"referenceName": "Json1",
 											"type": "DatasetReference",
 											"parameters": {
-												"day": "18th",
-												"month": "february"
+												"day": "19th",
+												"month": "August"
 											}
 										}
 									]
