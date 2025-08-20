@@ -8,7 +8,7 @@
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
-			"relativeUrl": "v3/locations?coordinates=50.9375,6.9603&radius=10000"
+			"relativeUrl": "v3/locations?coordinates=50.9375,6.9603&radius=25000"
 		},
 		"schema": []
 	},
