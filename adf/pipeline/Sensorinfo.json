@@ -20,8 +20,8 @@
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
-							"wildcardFolderPath": "2025/August/12th",
-							"wildcardFileName": "sensorids.json",
+							"wildcardFolderPath": "2025/August/20th",
+							"wildcardFileName": "ids",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
@@ -32,7 +32,7 @@
 						"referenceName": "idstorage",
 						"type": "DatasetReference",
 						"parameters": {
-							"day": "12th"
+							"day": "20th"
 						}
 					},
 					"firstRowOnly": false
@@ -98,8 +98,8 @@
 											"value": "@item().final_id",
 											"type": "Expression"
 										},
-										"datefrom": "2025-04-01",
-										"dateto": "2025-05-01"
+										"datefrom": "2025-08-01",
+										"dateto": "2025-08-20"
 									}
 								}
 							],
@@ -108,8 +108,8 @@
 									"referenceName": "Json1",
 									"type": "DatasetReference",
 									"parameters": {
-										"day": "13th",
-										"month": "may"
+										"day": "20th",
+										"month": "august_new"
 									}
 								}
 							]
