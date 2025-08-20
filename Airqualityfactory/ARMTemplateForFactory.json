@@ -111,8 +111,8 @@
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
 									"recursive": true,
-									"wildcardFolderPath": "2025/August/12th",
-									"wildcardFileName": "sensorids.json",
+									"wildcardFolderPath": "2025/August/20th",
+									"wildcardFileName": "ids",
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -123,7 +123,7 @@
 								"referenceName": "idstorage",
 								"type": "DatasetReference",
 								"parameters": {
-									"day": "12th"
+									"day": "20th"
 								}
 							},
 							"firstRowOnly": false
@@ -189,146 +189,8 @@
 													"value": "@item().final_id",
 													"type": "Expression"
 												},
-												"datefrom": "2025-04-01",
-												"dateto": "2025-05-01"
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "Json1",
-											"type": "DatasetReference",
-											"parameters": {
-												"day": "13th",
-												"month": "may"
-											}
-										}
-									]
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"variables": {
-					"sensorData": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "Main assets"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/idstorage')]",
-				"[concat(variables('factoryId'), '/datasets/sensorsourcebatch')]",
-				"[concat(variables('factoryId'), '/datasets/Json1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Sensorinfo_2ndbatch')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Lookup1",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "JsonSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"wildcardFolderPath": "2025/August/12th",
-									"wildcardFileName": "sensorids.json",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "JsonReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "idstorage",
-								"type": "DatasetReference",
-								"parameters": {
-									"day": "12th"
-								}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "ForEach1",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "Lookup1",
-								"dependencyConditions": [
-									"Completed"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('Lookup1').output.value",
-								"type": "Expression"
-							},
-							"activities": [
-								{
-									"name": "Copy data1",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "RestSource",
-											"httpRequestTimeout": "00:01:40",
-											"requestInterval": "00.00:00:00.010",
-											"requestMethod": "GET",
-											"paginationRules": {
-												"supportRFC5988": "true"
-											}
-										},
-										"sink": {
-											"type": "JsonSink",
-											"storeSettings": {
-												"type": "AzureBlobStorageWriteSettings"
-											},
-											"formatSettings": {
-												"type": "JsonWriteSettings"
-											}
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "sensorsourcebatch",
-											"type": "DatasetReference",
-											"parameters": {
-												"sensor_id": "@item().final_id",
 												"datefrom": "2025-08-01",
-												"dateto": "2025-08-19"
+												"dateto": "2025-08-20"
 											}
 										}
 									],
@@ -337,8 +199,8 @@
 											"referenceName": "Json1",
 											"type": "DatasetReference",
 											"parameters": {
-												"day": "19th",
-												"month": "August"
+												"day": "20th",
+												"month": "august_new"
 											}
 										}
 									]
@@ -880,7 +742,7 @@
 				"annotations": [],
 				"type": "RestResource",
 				"typeProperties": {
-					"relativeUrl": "v3/locations?coordinates=50.9375,6.9603&radius=10000"
+					"relativeUrl": "v3/locations?coordinates=50.9375,6.9603&radius=25000"
 				},
 				"schema": []
 			},
