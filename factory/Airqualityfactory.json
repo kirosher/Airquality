@@ -1,9 +1,0 @@
-{
-	"name": "Airqualityfactory",
-	"location": "eastus",
-	"identity": {
-		"type": "SystemAssigned",
-		"principalId": "bf7dfeb1-7f19-40fb-9228-5b62a4221984",
-		"tenantId": "28072171-5a42-4e18-b378-39b84c05d1d7"
-	}
-}
