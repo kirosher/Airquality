@@ -13,6 +13,10 @@
 			"month": {
 				"type": "string",
 				"defaultValue": "may"
+			},
+			"year": {
+				"type": "string",
+				"defaultValue": "2025"
 			}
 		},
 		"annotations": [],
@@ -25,7 +29,7 @@
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "Sensorinfo/Sensorinfo_@{dataset().month}/2025/August/@{dataset().day}",
+					"value": "Sensorinfo/Sensorinfo_@{dataset().month}/@{dataset().year}/@{dataset().month}/@{dataset().day}",
 					"type": "Expression"
 				},
 				"container": "airdata"

@@ -98,8 +98,8 @@
 											"value": "@item().final_id",
 											"type": "Expression"
 										},
-										"datefrom": "2025-08-01",
-										"dateto": "2025-08-20"
+										"datefrom": "@formatDateTime(addDays(utcNow(), -1), 'yyyy-MM-dd')",
+										"dateto": "@utcNow('yyyy-MM-dd')"
 									}
 								}
 							],
@@ -108,8 +108,12 @@
 									"referenceName": "Json1",
 									"type": "DatasetReference",
 									"parameters": {
-										"day": "20th",
-										"month": "august_new"
+										"day": {
+											"value": "@formatDateTime(addDays(utcNow(), -1), 'dd')",
+											"type": "Expression"
+										},
+										"month": "@formatDateTime(addDays(utcNow(), -1), 'MM')",
+										"year": "@formatDateTime(addDays(utcNow(), -1), 'yyyy')"
 									}
 								}
 							]
